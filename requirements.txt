@@ -1,5 +1,5 @@
 dotenv
 flask
-mysql.
+mysql.connector
 requests
 gunicorn
