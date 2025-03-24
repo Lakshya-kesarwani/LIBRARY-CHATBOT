@@ -3,3 +3,5 @@ flask
 mysql.connector
 requests
 gunicorn
+mysql-connector-python
+python-dotenv
