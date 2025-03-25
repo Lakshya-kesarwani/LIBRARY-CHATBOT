@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f4f4f4; }
+        .navbar { background: #0A54CE; padding: 15px; text-align: center; }
+        .navbar a { color: white; text-decoration: none; padding: 15px; display: inline-block; }
+        .navbar a:hover { background: #0A54CE; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); border-radius: 5px; }
+        .hidden { display: none; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" onclick="showTab('home')">Home</a>
+        <a href="#" onclick="showTab('books')">Books</a>
+        <a href="#" onclick="showTab('search')">Search</a>
+        <a href="#" onclick="showTab('contact')">Contact</a>
+    </div>
+
+    <div class="container">
+        <div id="home"><h2>Welcome to the Library</h2><p>Your gateway to knowledge and information.</p></div>
+        <div id="books" class="hidden"><h2>Books Collection</h2><p>Explore our vast collection of books.</p></div>
+        <div id="search" class="hidden"><h2>Search Books</h2><input type="text" placeholder="Enter book title..."></div>
+        <div id="contact" class="hidden"><h2>Contact Us</h2><p>Email: library@iitgn.ac.in</p></div>
+    </div>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-title="library-chatbot"
+      agent-id="d189777e-2603-4aca-af49-1eea1d9a3125"
+      language-code="en"
+    ></df-messenger>
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
