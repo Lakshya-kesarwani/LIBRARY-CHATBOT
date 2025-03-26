@@ -133,18 +133,18 @@ def general_query(req):
 
 # Template function for future intents
 def handle_custom_intent(intent,req):
-    if intent == "Show Available Books":
-        return show_available_books()
-    elif intent == "Find Book by Genre":
-        genre = req.get('queryResult', {}).get('parameters', {}).get('genre', "")
-        print(genre)
-        return books_bygenre(genre)
-    elif intent == "books.by_author":
-        author = req.get('queryResult', {}).get('parameters', {}).get('author', "")
-        print(author)
-        return books_byauthor(author)
-    else:
-        return general_query(req)
+    # if intent == "Show Available Books":
+    #     return show_available_books()
+    # elif intent == "Find Book by Genre":
+    #     genre = req.get('queryResult', {}).get('parameters', {}).get('genre', "")
+    #     print(genre)
+    #     return books_bygenre(genre)
+    # elif intent == "books.by_author":
+    #     author = req.get('queryResult', {}).get('parameters', {}).get('author', "")
+    #     print(author)
+    #     return books_byauthor(author)
+    # else:
+    return general_query(req)
     # Add more intent handling functions here
     return {"fulfillmentText": "I didn't understand that."}
 
