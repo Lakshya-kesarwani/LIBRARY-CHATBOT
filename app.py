@@ -37,7 +37,7 @@ def show_available_books():
     if not cursor:
         return {"fulfillmentText": "Database connection error."}
     
-    cursor.execute("SELECT title FROM BOOK_DETAILS WHERE availability = 'y';")
+    cursor.execute("SELECT title FROM books_details")
     books = cursor.fetchall()
     
     if not books:
@@ -89,7 +89,7 @@ def books_byauthor(author):
 def general_query(req):
     if not cursor:
         return {"fulfillmentText": "Database connection error."}
-    query = "SELECT * FROM BOOK_DETAILS WHERE 1=1"
+    query = "SELECT * FROM books_details WHERE 1=1"
     values = []
     
     # Extract parameters from request
@@ -143,6 +143,7 @@ def general_query(req):
 # Template function for future intents
 def handle_custom_intent(intent,req):
     if intent == "Show Available Books":
+        print("GOING TO Show Available Books")
         return show_available_books()
     elif intent == "Find Book by Genre":
         genre = req.get('queryResult', {}).get('parameters', {}).get('genre', "")
@@ -157,6 +158,7 @@ def handle_custom_intent(intent,req):
         print(isbn)
         return books_byauthor(isbn)
     else:
+        print("GOING TO GENERAL QUERY")
         return general_query(req)
   
 
@@ -171,6 +173,7 @@ def webhook():
         req = json.loads(raw_data)
         print(req)
         intent = req.get('queryResult', {}).get('intent', {}).get('displayName', "")
+        print(f"Intent: {intent}")
         response = handle_custom_intent(intent,req)
         # response2 = handle_custom_intent("",req)
         # if(len(response["fulfillmentText"].split(":")[-1])<len(response2["fulfillmentText"].split(":")[-1])):
