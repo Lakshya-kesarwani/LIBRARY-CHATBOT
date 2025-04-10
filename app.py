@@ -46,11 +46,7 @@ def show_available_books():
     book_list = ", ".join([book["title"] for book in books])
     return {"fulfillmentText": f"Available books: {book_list}"}
 
-
-
 # Function to recommend books based on genre
-
-
 def books_bygenre(genre):
     if not cursor:
         return {"fulfillmentText": "Database connection error."}
@@ -62,8 +58,20 @@ def books_bygenre(genre):
         return {"fulfillmentText": "No books are currently available in this genre."}
     book_list = ", ".join([book["title"] for book in books])
     return {"fulfillmentText": f"Books in this genre: {book_list}"}
+
+# Function to locate a book by ISBN
+def locate_book(isbn):
+    if not cursor:
+        return {"fulfillmentText": "Database connection error."}
     
-    
+    cursor.execute("SELECT title FROM BOOK_DETAILS WHERE isbn = %s", (isbn,))
+    books = cursor.fetchall()
+
+    if not books:
+        return {"fulfillmentText": "No books are currently available with this ISBN."}
+    book_list = ", ".join([book["title"] for book in books])
+    return {"fulfillmentText": f"Books with this ISBN: {book_list}"}
+
 # Function to recommend books based on author
 def books_byauthor(author):
     if not cursor:
@@ -77,6 +85,7 @@ def books_byauthor(author):
     book_list = ", ".join([book["title"] for book in books])
     return {"fulfillmentText": f"Books by this author: {book_list}"}
 
+# Function to handle general queries with multiple parameters
 def general_query(req):
     if not cursor:
         return {"fulfillmentText": "Database connection error."}
@@ -133,20 +142,23 @@ def general_query(req):
 
 # Template function for future intents
 def handle_custom_intent(intent,req):
-    # if intent == "Show Available Books":
-    #     return show_available_books()
-    # elif intent == "Find Book by Genre":
-    #     genre = req.get('queryResult', {}).get('parameters', {}).get('genre', "")
-    #     print(genre)
-    #     return books_bygenre(genre)
-    # elif intent == "books.by_author":
-    #     author = req.get('queryResult', {}).get('parameters', {}).get('author', "")
-    #     print(author)
-    #     return books_byauthor(author)
-    # else:
-    return general_query(req)
-    # Add more intent handling functions here
-    return {"fulfillmentText": "I didn't understand that."}
+    if intent == "Show Available Books":
+        return show_available_books()
+    elif intent == "Find Book by Genre":
+        genre = req.get('queryResult', {}).get('parameters', {}).get('genre', "")
+        print(genre)
+        return books_bygenre(genre)
+    elif intent == "books.by_author":
+        author = req.get('queryResult', {}).get('parameters', {}).get('author', "")
+        print(author)
+        return books_byauthor(author)
+    elif intent == "locate_book":
+        isbn = req.get('queryResult', {}).get('parameters', {}).get('isbn', "")
+        print(isbn)
+        return books_byauthor(isbn)
+    else:
+        return general_query(req)
+  
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -160,9 +172,9 @@ def webhook():
         print(req)
         intent = req.get('queryResult', {}).get('intent', {}).get('displayName', "")
         response = handle_custom_intent(intent,req)
-        response2 = handle_custom_intent("",req)
-        if(len(response["fulfillmentText"].split(":")[-1])<len(response2["fulfillmentText"].split(":")[-1])):
-            response = response2
+        # response2 = handle_custom_intent("",req)
+        # if(len(response["fulfillmentText"].split(":")[-1])<len(response2["fulfillmentText"].split(":")[-1])):
+        #     response = response2
         return jsonify(response)
     
     except json.JSONDecodeError as e:
@@ -174,4 +186,4 @@ def webhook():
         return jsonify({"fulfillmentText": "An unexpected error occurred."})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5500, debug=True)
