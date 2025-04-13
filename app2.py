@@ -101,7 +101,7 @@ def webhook():
         print(f"Results: {results}")
         user_response = ask_model(response_generator(results, prompt))
 
-        return jsonify(user_response)
+        return jsonify({"fulfillmentText":user_response})
     
     except json.JSONDecodeError as e:
         print(f"❌ JSON Decode Error: {e}")
