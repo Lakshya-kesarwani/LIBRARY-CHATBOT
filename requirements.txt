@@ -6,4 +6,5 @@ gunicorn
 mysql-connector-python
 python-dotenv
 google-generativeai
+together
 
