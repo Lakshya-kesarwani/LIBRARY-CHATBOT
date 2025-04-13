@@ -1,26 +1,25 @@
 import requests
+from together import Together
+from dotenv import load_dotenv
+import os
+from flask import jsonify
+
+
+from openai import OpenAI
+load_dotenv()
+client = OpenAI(base_url ="https://openrouter.ai/api/v1", api_key=os.getenv("OPENAI_API_KEY"))
 def ask_model(prompt):
-    res = requests.post('http://localhost:11434/api/generate', json={
-        'model': 'deepseek-coder:6.7b',
-        'prompt': prompt,
-        'stream': False
-    })
-    # Check if the response status code is 200 (OK)
-    if res.status_code != 200:
-        raise Exception(f"Error: {res.status_code} - {res.text}")
-    # Check if the response contains JSON data  
-    try:
-        res.json()
-    except ValueError:
-        raise Exception("Error: Response is not in JSON format")
-    # Check if the response contains the expected keys
-    if 'response' not in res.json():
-        raise Exception("Error: 'response' key not found in JSON response")
-    # Return the 'response' key from the JSON response
-    # Check if the 'response' key is empty
-    if not res.json()['response']:
-        raise Exception("Error: 'response' key is empty")
-    return res.json()['response']
-prompt = "hello !!"
-response = ask_model(prompt)
-print(response)
+    
+    completion = client.chat.completions.create(
+    extra_body={},
+    model="deepseek/deepseek-r1:free",
+    messages=[
+        {
+        "role": "user",
+        "content": prompt
+        }
+    ]
+    )
+    return completion.choices[0].message.content
+
+# {"id":"npbKzfA-zqrih-92e6162efd9f8afd","object":"chat.completion","created":1744328399,"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","choices":[{"index":0,"logprobs":null,"seed":null,"finish_reason":"stop","message":{"role":"assistant","content":"Hello! How are you today? Is there something I can help you with or would you like to chat?","tool_calls":[]}}],"prompt":[],"usage":{"prompt_tokens":12,"completion_tokens":23,"total_tokens":35}}
