@@ -1,45 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Portal</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: #f4f4f4; }
-        .navbar { background: #0A54CE; padding: 15px; text-align: center; }
-        .navbar a { color: white; text-decoration: none; padding: 15px; display: inline-block; }
-        .navbar a:hover { background: #0A54CE; }
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); border-radius: 5px; }
-        .hidden { display: none; }
-        h2 { color: #333; }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <a href="#" onclick="showTab('home')">Home</a>
-        <a href="#" onclick="showTab('books')">Books</a>
-        <a href="#" onclick="showTab('search')">Search</a>
-        <a href="#" onclick="showTab('contact')">Contact</a>
-    </div>
 
-    <div class="container">
-        <div id="home"><h2>Welcome to the Library</h2><p>Your gateway to knowledge and information.</p></div>
-        <div id="books" class="hidden"><h2>Books Collection</h2><p>Explore our vast collection of books.</p></div>
-        <div id="search" class="hidden"><h2>Search Books</h2><input type="text" placeholder="Enter book title..."></div>
-        <div id="contact" class="hidden"><h2>Contact Us</h2><p>Email: library@iitgn.ac.in</p></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f4f4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: rgb(37, 15, 15);
+      padding: 5px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      padding: 15px;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      background: #864D4D;
+      border-radius: 4px;
+    }
+
+    .main-content {
+      flex: 1;
+      margin-top: 50px; /* To account for fixed navbar */
+      width: 100%;
+      position: relative;
+    }
+
+    /* Full screen background image container */
+    .background-container {
+      background-image: url("{{ url_for('static', filename='images/library_background.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 100%;
+      min-height: calc(100vh - 60px);
+      position: relative;
+    }
+
+    /* Full screen overlay */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(125, 73, 73, 0.4);
+      z-index: 1;
+    }
+
+    /* Welcome heading positioned below navbar and to the left */
+    .welcome-section {
+      position: relative;
+      z-index: 2;
+      text-align: left;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .content-section {
+      position: relative;
+      z-index: 2;
+      padding: 20px 30px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h2 {
+      color: #ffffff;
+      margin-bottom: 20px;
+      font-size: 40px;
+    }
+
+    p {
+      color: #ffffff;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <a href="#" onclick="showTab('home'); return false;">Home</a>
+    <a href="#" onclick="showTab('books'); return false;">Books</a>
+    <a href="#" onclick="showTab('search'); return false;">Search</a>
+    <a href="#" onclick="showTab('contact'); return false;">Contact</a>
+    <a href="#" onclick="showTab('chat'); return false;">Chat</a>
+  </div>
+
+  <div class="main-content">
+    <div class="background-container">
+      <!-- Full screen overlay -->
+      <div class="overlay"></div>
+      
+      <!-- Welcome section positioned below navbar and to the left -->
+      <div class="welcome-section" id="home">
+        <h2>Welcome to the Library</h2>
+        <p>Your gateway to knowledge and information.</p>
+      </div>
+      
+      <div class="content-section hidden" id="books">
+        <h2>Books Collection</h2>
+        <p>Explore our vast collection of books.</p>
+      </div>
+      
+      <div class="content-section hidden" id="search">
+        <h2>Search Books</h2>
+        <input type="text" placeholder="Enter book title...">
+      </div>
+      
+      <div class="content-section hidden" id="contact">
+        <h2>Contact Us</h2>
+        <p>Email: library@iitgn.ac.in</p>
+      </div>
+      
+      <div class="content-section hidden" id="chat">
+        <h2>Library Chat</h2>
+        <p>Ask questions about our services and collections.</p>
+      </div>
     </div>
-    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-    <df-messenger
-      chat-title="library-chatbot"
-      agent-id="d189777e-2603-4aca-af49-1eea1d9a3125"
-      language-code="en"
-    ></df-messenger>
-    <script>
-        function showTab(tabId) {
-            document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-        }
-    </script>
+  </div>
+
+  <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/04/08/14/20250408140421-NE9U9VY9.js"></script>
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.welcome-section, .content-section').forEach(div => {
+        div.classList.add('hidden');
+      });
+      document.getElementById(tabId).classList.remove('hidden');
+    }
+    
+    // Show home tab by default
+    document.addEventListener('DOMContentLoaded', function() {
+      showTab('home');
+    });
+  </script>
 </body>
 </html>
